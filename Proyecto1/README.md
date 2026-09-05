@@ -17,6 +17,9 @@ El proyecto "Chapin Red" consiste en una infraestructura de red empresarial dist
 La arquitectura está diseñada con alta disponibilidad, segmentación lógica mediante VLANs y seguridad de Capa 3.
 
 ![Topología](./imagen/topologia.png)
+![](./imagen/1.png)
+![](./imagen/3.png)
+![](./imagen/2.png)
 
 ---
 
@@ -58,13 +61,15 @@ Para garantizar la disponibilidad en la capa de acceso y distribución, se imple
 - **PAgP (Cisco Proprietary):** Configurado en 3 enlaces troncales del Edificio Derecho.
 - **VTP (VLAN Trunking Protocol):** Dominio `CHAPINRED`, contraseña `202200341`, configurando el MS7 como Servidor y el resto de los equipos como Clientes.
 
-**Comandos de Ejemplo — LACP (MS7, Edificio Izquierdo):**
+**Comandos — LACP (MS7, Edificio Izquierdo):**
 ```text
 interface range GigabitEthernet1/0/4 - 6
  switchport trunk encapsulation dot1q
  switchport mode trunk
  channel-group 5 mode active
 ```
+![](./imagen/5.png)
+
 ## 4. Enrutamiento Dinámico (Capa 3)
 
 Al tener un carné con terminación impar, se configuró el protocolo EIGRP utilizando el Sistema Autónomo (AS) 10. Este protocolo permite el intercambio dinámico de las rutas LAN (192.188.41.0) y WAN (10.4.41.0) a través de los 4 edificios de la topología.
@@ -76,6 +81,7 @@ router eigrp 10
  network 10.4.41.0 0.0.0.255
  network 192.188.41.0 0.0.0.255
  ```
+![](./imagen/EIGRP.png)
 
  ## 5. Servicios de Red y DHCP Centralizado
 
@@ -88,7 +94,7 @@ Los servicios DHCP se centralizaron conectando dos servidores al switch MAN MS1.
 
 Para permitir que las computadoras de los edificios Izquierdo y Derecho obtengan direcciones IP dinámicas desde redes distintas a las de los servidores, se implementó DHCP Relay (`ip helper-address`) en las interfaces virtuales (SVIs) de los gateways correspondientes.
 
-### Configuración DHCP Relay — Ejemplo en MS7
+### Configuración DHCP Relay — en MS7
 
 ```plaintext
 interface vlan 10
@@ -96,6 +102,7 @@ interface vlan 10
 interface vlan 20
  ip helper-address 10.4.41.2
 ```
+![](./imagen/DHCP.png)
 
 ## 6. Políticas de Seguridad (Listas de Control de Acceso - ACL)
 Se implementaron políticas estrictas de seguridad perimetral a nivel de Capa 3, aplicadas directamente en las interfaces virtuales (SVI).
